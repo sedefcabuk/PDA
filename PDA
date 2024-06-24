@@ -1,0 +1,50 @@
+class PDA:
+    def __init__(self):
+        self.stack = []
+
+    def is_valid_expression(self, expression):
+        self.stack = []
+        state = "q0"
+        for char in expression:
+            if state == "q0":
+                if char.isdigit():
+                    state = "q1"
+                elif char == '(':
+                    self.stack.append('(')
+                    state = "q0"
+                else:
+                    return False
+            elif state == "q1":
+                if char in "+-*/":
+                    state = "q2"
+                elif char == ')':
+                    if self.stack and self.stack[-1] == '(':
+                        self.stack.pop()
+                        state = "q1"
+                    else:
+                        return False
+                elif char.isdigit():
+                    state = "q1"
+                else:
+                    return False
+            elif state == "q2":
+                if char.isdigit():
+                    state = "q1"
+                elif char == '(':
+                    self.stack.append('(')
+                    state = "q0"
+                else:
+                    return False
+        
+        return state == "q1" and not self.stack
+
+def main():
+    pda = PDA()
+    print("Çıkmak için 'exit' yazınız.")
+    while True:
+        expression = input("Matematiksel ifadeyi giriniz: ").strip()
+        if expression.lower() == 'exit':
+            break
+        is_valid = pda.is_valid_expression(expression)
+        print(f"{'Matematiksel ifade geçerlidir.' if is_valid else 'Matematiksel ifade geçersizdir.'}")
+main()
